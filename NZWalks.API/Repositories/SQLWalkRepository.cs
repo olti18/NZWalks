@@ -1,0 +1,31 @@
+﻿using NZWalks.API.Data;
+using NZWalks.API.Models.Domain;
+
+namespace NZWalks.API.Repositories
+{
+    public class SQLWalkRepository : IWalkRepository
+    {
+        private readonly NZWalksDbContext dbContext;
+        private readonly IWalkRepository walkRepository;
+        public SQLWalkRepository(NZWalksDbContext dbContext)
+        {
+            this.dbContext = dbContext;
+        }
+
+
+        public async Task<Walk> CreateAsync(Walk walk)
+        {
+            await dbContext.AddAsync(walk);
+            await dbContext.SaveChangesAsync();
+
+            return walk;
+        }
+
+        public async Task<Walk> UpdateAsync(Walk walk)
+        {
+            await walkRepository.UpdateAsync(walk);
+            await dbContext.SaveChangesAsync();
+            return walk;
+        }
+    }
+}
